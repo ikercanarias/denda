@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tienda oficial · Larrobeltz Alonsotegi</title>
+<link rel="icon" href="img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+:root{--red:#d6191f;--red-d:#a80f14;--ink:#17130f;--mut:#6b6761;--line:#dcdde1;--bg:#f2f3f5;--card:#fff;
+--h:'Barlow Condensed','Arial Narrow',Arial,sans-serif;--b:'Barlow',system-ui,Arial,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--b);padding-bottom:96px}
+header{background:var(--ink);color:#fff;border-bottom:5px solid var(--red)}
+.wrap{max-width:780px;margin:0 auto;padding:0 16px}
+.hero{display:flex;align-items:center;gap:16px;padding:20px 0}
+.hero img{width:84px;height:84px;flex:none}
+h1{font:700 clamp(32px,7vw,48px)/.95 var(--h);margin:0;text-transform:uppercase;letter-spacing:.01em}
+.hero p{margin:6px 0 0;color:#c9c6c1;font-size:15px}
+h2{font:700 26px/1.1 var(--h);margin:0 0 14px;text-transform:uppercase;letter-spacing:.02em}
+section{background:var(--card);border-radius:10px;padding:20px;margin:18px 0;border:1px solid var(--line)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+label.f{display:block;font-weight:600;font-size:14px}
+label.f small{font-weight:400;color:var(--mut)}
+input[type=text],input[type=email],select{width:100%;margin-top:4px;padding:11px 12px;font:inherit;border:1.5px solid var(--line);border-radius:7px;background:#fff;color:var(--ink)}
+input:focus-visible,select:focus-visible,button:focus-visible,.prod:focus-within{outline:3px solid #ff8a8e;outline-offset:1px}
+.bad{border-color:var(--red)!important}
+.player{border:1.5px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px}
+.phead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.phead h3{font:700 21px var(--h);margin:0;text-transform:uppercase}
+.link{background:none;border:0;color:var(--red-d);font:600 14px var(--b);cursor:pointer;padding:6px;text-decoration:underline}
+.prods{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.prod{border:2px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;position:relative}
+.prod.on{border-color:var(--red)}
+.pick{display:block;cursor:pointer}
+.pick input{position:absolute;opacity:0;pointer-events:none}
+.pick img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain;background:#fff;padding:6px}
+.pick .row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg);font-weight:600}
+.prod.on .row{background:var(--red);color:#fff}
+.tick{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:#fff;border:2px solid var(--line);display:grid;place-items:center;font-size:15px;color:#fff}
+.prod.on .tick{background:var(--red);border-color:var(--red)}
+.opt{padding:10px 12px 12px}
+.opt[hidden]{display:none}
+.add{width:100%;padding:12px;border:2px dashed var(--red);background:none;color:var(--red-d);border-radius:10px;font:700 18px var(--h);text-transform:uppercase;cursor:pointer}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(0,0,0,.08);z-index:5}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px}
+.tot{font:700 30px/1 var(--h)}.tot small{display:block;font:500 13px var(--b);color:var(--mut)}
+.send{background:var(--red);color:#fff;border:0;border-radius:8px;padding:14px 26px;font:700 20px var(--h);text-transform:uppercase;cursor:pointer}
+.send:hover{background:var(--red-d)}.send:disabled{opacity:.6;cursor:wait}
+#err{display:none;background:#fdeaea;border:1.5px solid var(--red);color:#7a0b0f;padding:12px 14px;border-radius:8px;margin-top:12px;font-weight:500}
+.ok{text-align:center;padding:30px 20px}.ok img{width:90px}
+.sum{text-align:left;margin:16px auto 0;max-width:460px;font-size:15px}.sum li{margin:4px 0}
+.hp{position:absolute;left:-9999px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}.prods{gap:8px}section{padding:16px}}
+@media(prefers-reduced-motion:no-preference){.prod{transition:border-color .15s}}
+</style>
+</head>
+<body>
+<header><div class="wrap hero">
+  <img src="img/logo.png" alt="Escudo Larrobeltz Alonsotegi">
+  <div><h1>Tienda oficial</h1><p>Larrobeltz Alonsotegi · Equipación y complementos para las familias</p></div>
+</div></header>
+
+<main class="wrap" id="app">
+<form id="form" novalidate>
+  <section>
+    <h2>Datos del padre, madre o tutor/a</h2>
+    <div class="grid2">
+      <label class="f">Nombre<input type="text" id="tName" autocomplete="given-name"></label>
+      <label class="f">Apellidos<input type="text" id="tSurname" autocomplete="family-name"></label>
+      <label class="f full">Email<input type="email" id="tEmail" autocomplete="email"></label>
+    </div>
+  </section>
+  <section>
+    <h2>Jugadores y jugadoras</h2>
+    <div id="players"></div>
+    <button type="button" class="add" id="addPlayer">+ Añadir otro jugador/a</button>
+  </section>
+  <input class="hp" type="text" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+  <div id="err" role="alert"></div>
+</form>
+</main>
+
+<div class="bar" id="bar"><div class="wrap">
+  <div class="tot"><span id="total">0 €</span><small id="count">Ninguna prenda seleccionada</small></div>
+  <button class="send" id="send" form="form" type="submit">Enviar pedido</button>
+</div></div>
+
+<script>
+/* ============ CONFIGURACIÓN (lo único que necesitas tocar) ============ */
+const CONFIG = {
+  // URL de la aplicación web de Google Apps Script (ver apps-script.gs)
+  endpoint: 'https://script.google.com/macros/s/AKfycbxbPyQ4yua01nGNnSMib0VRYa8bNvVMdh41P1kWWBd05xrySXp2Y1zECPFsuntYCM4M/exec',
+  maxPlayers: 5,
+  // Equipos del club. Deja la lista vacía [] para ocultar este campo.
+  teams: ['Junior', 'Infantil A', 'Infantil B', 'Premini', 'Eskola'],
+  // Tallas reutilizables
+  sizes: {
+    ropa: ['6XS', '5XS', '4XS', '3XS', '2XS', 'XS', 'S', 'M', 'L', 'XL', 'XXL']
+  },
+  // Para añadir una prenda: copia una línea y cambia sus datos (y sube la foto a /img).
+  // sizes: nombre de la lista de tallas | custom: pide un texto opcional (p. ej. nombre en la mochila)
+  products: [
+    { id: 'chaqueta', name: 'Chaqueta',            price: 25, img: 'img/chaqueta.jpg', sizes: 'ropa' },
+    { id: 'camiseta', name: 'Camiseta',            price: 14, img: 'img/camiseta.jpg', sizes: 'ropa' },
+    { id: 'pantalon', name: 'Pantalón de chándal', price: 24, img: 'img/pantalon.jpg', sizes: 'ropa' },
+    { id: 'mochila',  name: 'Mochila con nombre',  price: 24, img: 'img/mochila.jpg',  custom: 'Nombre en la mochila (opcional)' }
+  ]
+};
+/* ====================================================================== */
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const eur = n => n.toLocaleString('es-ES') + ' €';
+const newPlayer = () => ({ name: '', surname: '', team: '', items: {} });
+let players = [newPlayer()];
+
+function productHTML(p, i, prod) {
+  const it = p.items[prod.id] || {};
+  const on = !!it.on;
+  let opt = '';
+  if (prod.sizes) {
+    opt = `<label class="f">Talla<select data-k="size">
+      <option value="">Elige talla</option>` +
+      CONFIG.sizes[prod.sizes].map(s => `<option${it.size === s ? ' selected' : ''}>${esc(s)}</option>`).join('') +
+      `</select></label>`;
+  } else if (prod.custom) {
+    opt = `<label class="f">${esc(prod.custom)}<input type="text" data-k="custom" maxlength="20" value="${esc(it.custom)}"></label>`;
+  }
+  return `<div class="prod${on ? ' on' : ''}" data-id="${prod.id}">
+    <label class="pick">
+      <input type="checkbox" data-k="on"${on ? ' checked' : ''}>
+      <span class="tick">${on ? '✓' : ''}</span>
+      <img src="${prod.img}" alt="${esc(prod.name)}">
+      <span class="row"><span>${esc(prod.name)}</span><span>${eur(prod.price)}</span></span>
+    </label>
+    <div class="opt"${on && opt ? '' : ' hidden'}>${opt}</div>
+  </div>`;
+}
+
+function renderPlayers() {
+  $('#players').innerHTML = players.map((p, i) => `
+    <div class="player" data-i="${i}">
+      <div class="phead"><h3>Jugador/a ${i + 1}</h3>
+        ${players.length > 1 ? '<button type="button" class="link" data-remove>Quitar</button>' : ''}</div>
+      <div class="grid2">
+        <label class="f">Nombre<input type="text" data-k="name" value="${esc(p.name)}"></label>
+        <label class="f">Apellidos<input type="text" data-k="surname" value="${esc(p.surname)}"></label>
+        ${CONFIG.teams.length ? `<label class="f full">Equipo<select data-k="team"><option value="">Elige equipo</option>` +
+          CONFIG.teams.map(t => `<option${p.team === t ? ' selected' : ''}>${esc(t)}</option>`).join('') + `</select></label>` : ''}
+      </div>
+      <div class="prods">${CONFIG.products.map(pr => productHTML(p, i, pr)).join('')}</div>
+    </div>`).join('');
+  $('#addPlayer').style.display = players.length >= CONFIG.maxPlayers ? 'none' : '';
+  updateTotal();
+}
+
+function selected() {
+  const out = [];
+  players.forEach((p, i) => CONFIG.products.forEach(pr => {
+    const it = p.items[pr.id];
+    if (it && it.on) out.push({ i, p, pr, it });
+  }));
+  return out;
+}
+function updateTotal() {
+  const s = selected(), t = s.reduce((a, x) => a + x.pr.price, 0);
+  $('#total').textContent = eur(t);
+  $('#count').textContent = s.length ? `${s.length} ${s.length === 1 ? 'prenda' : 'prendas'}` : 'Ninguna prenda seleccionada';
+  return t;
+}
+
+const playersEl = $('#players');
+playersEl.addEventListener('input', onChange);
+playersEl.addEventListener('change', onChange);
+function onChange(e) {
+  const t = e.target, k = t.dataset.k;
+  if (!k) return;
+  const pl = t.closest('.player'), p = players[+pl.dataset.i];
+  t.classList.remove('bad');
+  const prodEl = t.closest('.prod');
+  if (!prodEl) { p[k] = t.value; return; }
+  const id = prodEl.dataset.id, it = p.items[id] = p.items[id] || {};
+  if (k === 'on') {
+    it.on = t.checked;
+    prodEl.classList.toggle('on', it.on);
+    prodEl.querySelector('.tick').textContent = it.on ? '✓' : '';
+    const o = prodEl.querySelector('.opt');
+    o.hidden = !(it.on && o.children.length);
+    if (it.on) { const f = o.querySelector('select'); if (f) f.focus(); }
+    updateTotal();
+  } else it[k] = t.value;
+}
+playersEl.addEventListener('click', e => {
+  if (e.target.matches('[data-remove]')) {
+    players.splice(+e.target.closest('.player').dataset.i, 1);
+    renderPlayers();
+  }
+});
+$('#addPlayer').addEventListener('click', () => {
+  players.push(newPlayer()); renderPlayers();
+  playersEl.lastElementChild.querySelector('input[type=text]').focus();
+});
+
+function fail(msg, node) {
+  const e = $('#err'); e.textContent = msg; e.style.display = 'block';
+  if (node) { node.classList.add('bad'); node.scrollIntoView({ block: 'center', behavior: 'smooth' }); node.focus(); }
+  return false;
+}
+function validate() {
+  $('#err').style.display = 'none';
+  const need = (id, msg) => { const n = $(id); return n.value.trim() ? true : fail(msg, n); };
+  if (!need('#tName', 'Escribe tu nombre.') || !need('#tSurname', 'Escribe tus apellidos.')) return false;
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($('#tEmail').value.trim())) return fail('Escribe un email válido.', $('#tEmail'));
+  const els = [...document.querySelectorAll('.player')];
+  for (let i = 0; i < players.length; i++) {
+    const p = players[i], box = els[i];
+    if (!p.name.trim()) return fail(`Escribe el nombre del jugador/a ${i + 1}.`, box.querySelector('[data-k=name]'));
+    if (!p.surname.trim()) return fail(`Escribe los apellidos del jugador/a ${i + 1}.`, box.querySelector('[data-k=surname]'));
+    if (CONFIG.teams.length && !p.team) return fail(`Elige el equipo del jugador/a ${i + 1}.`, box.querySelector('[data-k=team]'));
+    for (const pr of CONFIG.products) {
+      const it = p.items[pr.id];
+      if (it && it.on && pr.sizes && !it.size)
+        return fail(`Elige la talla de «${pr.name}» para ${p.name}.`, box.querySelector(`[data-id=${pr.id}] select`));
+    }
+  }
+  if (!selected().length) return fail('Selecciona al menos una prenda.', $('#players'));
+  return true;
+}
+
+$('#form').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!validate() || $('#hp').value) return;
+  const total = updateTotal(), orderId = 'P' + Date.now().toString(36).toUpperCase();
+  const payload = {
+    orderId, total,
+    tutorName: $('#tName').value.trim(), tutorSurname: $('#tSurname').value.trim(), email: $('#tEmail').value.trim(),
+    rows: selected().map(({ p, pr, it }) => ({
+      player: `${p.name.trim()} ${p.surname.trim()}`, team: p.team, product: pr.name,
+      size: it.size || '', custom: (it.custom || '').trim(), price: pr.price
+    }))
+  };
+  const btn = $('#send'); btn.disabled = true; btn.textContent = 'Enviando…';
+  try {
+    if (CONFIG.endpoint.startsWith('PEGA_')) console.warn('Modo prueba: configura CONFIG.endpoint.', payload);
+    else await fetch(CONFIG.endpoint, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+    $('#bar').style.display = 'none';
+    $('#app').innerHTML = `<section class="ok"><img src="img/logo.png" alt="">
+      <h2>¡Pedido recibido!</h2>
+      <p>Gracias, ${esc(payload.tutorName)}. Hemos registrado tu pedido <b>${orderId}</b> por un total de <b>${eur(total)}</b>.</p>
+      <ul class="sum">${payload.rows.map(r => `<li><b>${esc(r.player)}</b>: ${esc(r.product)}${r.size ? ' (' + esc(r.size) + ')' : ''}${r.custom ? ' · «' + esc(r.custom) + '»' : ''}</li>`).join('')}</ul></section>`;
+    window.scrollTo(0, 0);
+  } catch (err) {
+    btn.disabled = false; btn.textContent = 'Enviar pedido';
+    fail('No se ha podido enviar el pedido. Revisa tu conexión e inténtalo de nuevo.');
+  }
+});
+
+renderPlayers();
+</script>
+</body>
+</html>
